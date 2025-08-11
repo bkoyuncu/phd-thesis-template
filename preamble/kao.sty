@@ -314,7 +314,7 @@
 
 % Settings for paragraphs in the margins
 \newcommand{\@margin@par}{%
-	\justifying% justify text
+% 	\justifying% justify text
 	\setlength{\RaggedRightParindent}{0em}% Suppress indentation
 	\setlength{\parindent}{0em}% Suppress indentation
 	\setlength{\parskip}{0.5pc}% Set the space between paragraphs
@@ -492,7 +492,7 @@
 %----------------------------------------------------------------------------------------
 
 \RequirePackage{graphicx} % Include figures
-\setkeys{Gin}{width=\linewidth,totalheight=\textheight,keepaspectratio} % Improves figure scaling
+\setkeys{Gin}{width=\linewidth,totalheight=\textheight,keepaspectratio,draft=false} % Improves figure scaling
 \RequirePackage{tikz} % Allows to draw custom shapes
 \RequirePackage{tikzpagenodes} % Allows to anchor tikz nodes to page elements
 \RequirePackage{booktabs} % Nicer tables
@@ -540,8 +540,9 @@
 
 % Environment to hold a margin figure (from the sidenotes package)
 % We redefine it here because we want to use our own caption formatting.
-\RenewDocumentEnvironment{marginfigure}{o}{%
-	\FloatBarrier%
+\RenewDocumentEnvironment{marginfigure}{o s s}{%
+    \IfBooleanTF{#2}{\def\par{\let\par\endgraf}}{}% TODO check that all figures are safely put
+	\IfBooleanF{#3}{\FloatBarrier}%
 	\marginskip{\kaomarginskipabove}%
 	\begin{lrbox}{\@sidenotes@marginfigurebox}%
 	\begin{minipage}{\marginparwidth}%
@@ -549,13 +550,15 @@
 }{%
 	\end{minipage}%
 	\end{lrbox}%
+    \IfBooleanTF{#2}{\leavevmode}{}%
 	\marginnote[#1]{\usebox{\@sidenotes@marginfigurebox}}%
 	\marginskip{\kaomarginskipbelow}%
 }
 
 % Environment to hold a margin table (from the sidenotes package)
-\RenewDocumentEnvironment{margintable}{o}{%
-	\FloatBarrier%
+\RenewDocumentEnvironment{margintable}{o s s}{%
+    \IfBooleanTF{#2}{\def\par{\let\par\endgraf}}{}% TODO check that all figures are safely put
+	\IfBooleanF{#3}{\FloatBarrier}%
 	\marginskip{\kaomarginskipabove}%
 	\begin{lrbox}{\@sidenotes@margintablebox}%
 	\begin{minipage}{\marginparwidth}%
@@ -563,6 +566,7 @@
 }{%
 	\end{minipage}%
 	\end{lrbox}%
+    \IfBooleanTF{#2}{\leavevmode}{}%
 	\marginnote[#1]{\usebox{\@sidenotes@margintablebox}}%
 	\marginskip{\kaomarginskipbelow}%
 }
@@ -652,8 +656,9 @@
 \captionsetup{
 	format=margin, % Use the style previously declared
 	strut=no,%
+	justification=justified,
 	%hypcap=true, % Links point to the top of the figure
-	singlelinecheck=false,%
+	singlelinecheck=true,%
 	%width=\marginparwidth,
 	indention=0pt, % Suppress indentation
 	parindent=0pt, % Suppress space between paragraphs
@@ -664,6 +669,10 @@
 % Needed to have continued figures and tables (https://en.wikibooks.org/wiki/LaTeX/Floats,_Figures_and_Captions#Figures_in_multiple_parts)
 \DeclareCaptionLabelFormat{cont}{#1~#2\alph{ContinuedFloat}}
 \captionsetup[ContinuedFloat]{labelformat=cont}
+
+% Adri: center subcaptions
+% \DeclareCaptionFormat{submargin}{\@margin@par\Centering #1#2#3}
+% \captionsetup[subfigure]{format=submargin, singlelinecheck=true}
 
 % Captions for the 'margin' layout
 \NewDocumentCommand{\marginfloatsetup}{}{%
@@ -972,16 +981,16 @@
 	\begingroup%
 		% Move regular section and subsection to level 6 so that they won't be included and instead set let the mtoc versions take their place.
 		% Adapted from https://tex.stackexchange.com/a/133559/226693
-		\etocsetlevel{section}{6}
-		\etocsetlevel{subsection}{6}
-		\etocsetlevel{mtocsection}{1}
-		\etocsetlevel{mtocsubsection}{2}
-
+		\etocsetlevel{section}{6}%
+		\etocsetlevel{subsection}{6}%
+		\etocsetlevel{mtocsection}{1}%
+		\etocsetlevel{mtocsubsection}{2}%
+        %
 		% Define default widths
 		\def\margintocnumwidth{-.8mm}%
 		\def\margintocpagenumwidth{8pt}%
 		\setlength{\RaggedRightParfillskip}{0pt}
-
+        %
 		% Dry run to get the needed widths
 		\etocsetstyle{mtocsection}%
 			{}%
@@ -1011,8 +1020,9 @@
 			\global\let\margintocnumwidth\margintocnumwidth%
 			\global\let\margintocpagenumwidth\margintocpagenumwidth%
 		}%
-		\localtableofcontents%
-
+		\leavevmode%
+        \makebox[0pt]{\localtableofcontents}%
+        %
 		% Set the style for section entries
 		\etocsetstyle{mtocsection}%
 		{\parindent 0pt \parskip 2.5pt \parfillskip 0pt \RaggedRight}%
@@ -1029,7 +1039,9 @@
 		\etocsettocstyle{\usekomafont{section}\small}{}%
 		\etocsetnexttocdepth{\themargintocdepth}%
 		% Print the table of contents in the margin
-		\marginnote[#1]{\localtableofcontents}%
+%		\marginnote[#1]{\localtableofcontents}%  
+%        \oldmarginnote{\localtableofcontents}%
+        \oldmarginnote{\localtableofcontents}[\kao@if@nblskip{#1}{\@cdr#1\@nil\baselineskip}{#1}]%
 		\FloatBarrier%
 	\endgroup%
 }
@@ -1385,6 +1397,7 @@
 \newcommand{\etcetera}{\textit{et cetera}\xspace}
 \newcommand{\etc}{\textit{etc.}\xspace}
 \newcommand{\Etc}{\textit{Etc.}\xspace}
+\newcommand{\aka}{\textit{aka.}\xspace}
 \newcommand{\ie}{\textit{i.\nobreak\hairsp{}e.}\xspace}
 \newcommand{\Ie}{\textit{I.\nobreak\hairsp{}e.}\xspace}
 \newcommand{\eg}{\textit{e.\nobreak\hairsp{}g.}\xspace}
@@ -1393,8 +1406,13 @@
 \newcommand{\Iid}{\textit{I.\nobreak\hairsp{}i.\nobreak\hairsp{}d.}\xspace}
 \newcommand{\wrt}{\textit{w.\nobreak\hairsp{}r.\nobreak\hairsp{}t.}\xspace}
 \newcommand{\Wrt}{\textit{W.\nobreak\hairsp{}r.\nobreak\hairsp{}t.}\xspace}
+\newcommand{\wolog}{\textit{w.\nobreak\hairsp{}l.\nobreak\hairsp{}o.\nobreak\hairsp{}g.}\xspace}  % wlog already exists
+\newcommand{\Wolog}{\textit{W.\nobreak\hairsp{}l.\nobreak\hairsp{}o.\nobreak\hairsp{}g.}\xspace}
 \newcommand{\vs}{\textit{vs}\xspace}
 \newcommand{\cfr}{\textit{cfr.}\xspace}
+\newcommand{\st}{\textit{s.\nobreak\hairsp{}t.}\xspace}
+
+\newcommand{\textiff}{{iff}\xspace}
 
 % Tables
 \newcommand{\na}{\quad--} % Used in tables for N/A cells

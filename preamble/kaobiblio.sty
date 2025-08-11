@@ -33,7 +33,7 @@
 	%sorting=nyt,
 	%sortcites=true,
 	%autocite=footnote,
-	backend=bibtex, % Compile the bibliography with biber
+	backend=biber, % Compile the bibliography with biber
 	hyperref=true,
 	backref=false,
 	citecounter=true,
@@ -42,8 +42,8 @@
 	ibidtracker=context,
 	autopunct=true,
 	autocite=plain,
-  natbib=true, % make \citep command (provided by natbib) work
-  firstinits=true, % abbreviate author first names by initials.
+    natbib=true, % make \citep command (provided by natbib) work
+    giveninits=true, % abbreviate author first names by initials.
 }{biblatex}
 
 % Pass the unknown options to biblatex, overwriting the previous settings. Avoid passing the kao-specific options.
@@ -147,6 +147,16 @@
 %	CITATION COMMANDS
 %----------------------------------------------------------------------------------------
 
+% Custom command for self-citations
+\NewDocumentCommand{\formatmarginselfcitation}{m m}{% The parameter is a single citation key
+    [\expandafter\hyperref[ref:#1]{\color{thirdcolor} #2}]: \citeauthor*{#1} (\citeyear{#1}), \citetitle{#1}%
+}
+
+% DIRTY :)
+\NewDocumentCommand{\selfcitep}{m m}{% The parameter is a single citation key
+    [\expandafter\hyperref[ref:#1]{\color{thirdcolor} #2}]%
+}
+
 % Command to format the marginnote created for cited items
 \NewDocumentCommand{\formatmargincitation}{m}{% The parameter is a single citation key
 	\parencite{#1}: \citeauthor*{#1} (\citeyear{#1}), \citetitle{#1}%
@@ -154,7 +164,9 @@
 
 % Command to format the marginnote created for supercited items
 \NewDocumentCommand{\formatmarginsupercitation}{m}{% The parameter is a single citation key
-	\supercite{#1} \citeauthor*{#1} (\citeyear{#1})%
+    % I prefer to use the same format for both types of side citations
+	% \supercite{#1} \citeauthor*{#1} (\citeyear{#1})%  
+	\supercite{#1} \citeauthor*{#1} (\citeyear{#1}), \citetitle{#1}%
 }
 
 % The following command needs to be redefined every time \sidecite is called in order for \DeclareCiteCommand's wrapper to work correctly

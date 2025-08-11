@@ -16,15 +16,16 @@
 % If only the 'background' option is specified, all types of theorem will have that background. If more specific options are set, the previous option will be overwritten.
 \newcommand{\kaotheorems@defaultbg}{Goldenrod!45!white}
 \DeclareStringOption[\kaotheorems@defaultbg]{background}
-\DeclareStringOption[\kaotheorems@defaultbg]{theorembackground}
-\DeclareStringOption[\kaotheorems@defaultbg]{propositionbackground}
-\DeclareStringOption[\kaotheorems@defaultbg]{lemmabackground}
-\DeclareStringOption[\kaotheorems@defaultbg]{corollarybackground}
-\DeclareStringOption[\kaotheorems@defaultbg]{definitionbackground}
-\DeclareStringOption[\kaotheorems@defaultbg]{assumptionbackground}
-\DeclareStringOption[\kaotheorems@defaultbg]{remarkbackground}
-\DeclareStringOption[\kaotheorems@defaultbg]{examplebackground}
-\DeclareStringOption[\kaotheorems@defaultbg]{exercisebackground}
+\DeclareStringOption[\kaotheorems@background]{theorembackground}
+\DeclareStringOption[\kaotheorems@background]{propositionbackground}
+\DeclareStringOption[\kaotheorems@background]{lemmabackground}
+\DeclareStringOption[\kaotheorems@background]{corollarybackground}
+\DeclareStringOption[\kaotheorems@background]{definitionbackground}
+\DeclareStringOption[\kaotheorems@background]{assumptionbackground}
+\DeclareStringOption[\kaotheorems@background]{remarkbackground}
+\DeclareStringOption[\kaotheorems@background]{examplebackground}
+\DeclareStringOption[\kaotheorems@background]{exercisebackground}
+\DeclareStringOption[\kaotheorems@background]{goalbackground}
 
 \ProcessKeyvalOptions{kaotheorems} % Process the options
 
@@ -48,7 +49,7 @@
 		skipbelow=\topskip, % Does not work :(
 		rightmargin=0pt,
 		leftmargin=0pt,
-		innertopmargin=7pt,
+		innertopmargin=5pt,
 		innerbottommargin=5pt,
 		innerrightmargin=5pt,
 		innerleftmargin=5pt,
@@ -60,7 +61,7 @@
 		linecolor=maincolor,
 		roundcorner=5pt,
 		font={\color{maincolor}},
-    backgroundcolor=maincolor!5!white,
+        backgroundcolor=maincolor!5!white,
 		frametitlerule=true,
 	}
 
@@ -137,16 +138,33 @@
 		%refname={theorem,theorems},
 		%Refname={Theorem,Theorems},
 	]{kaoexercise}
+    \declaretheoremstyle[
+        %spaceabove=.5\thm@preskip,
+        %spacebelow=.5\thm@postskip,
+        %headfont=\normalfont\bfseries,
+        notefont=\bfseries, 
+        notebraces={}{},
+        %bodyfont=\small,
+%        headformat={\NOTE\space(\NUMBER)},
+        headformat={\NAME\space\NUMBER\space-\NOTE},
+%        headformat=\NUMBER~\NAME:\NOTE,
+        headpunct={},
+        postheadspace={.5em plus .1em minus .1em},
+        %prefoothook={\hfill\qedsymbol}
+        %refname={theorem,theorems},
+        %Refname={Theorem,Theorems},
+    ]{kaogoal}
 
 	% Theorems using the 'kaoplain' style
 	\theoremstyle{kaoplain}
 	\declaretheorem[
 		name=Theorem,
 		style=kaoplain,
-		refname={theorem,theorems},
+		refname={Theorem,Theorems},
 		Refname={Theorem,Theorems},
 		numberwithin=chapter,
 		mdframed={
+            backgroundcolor=\kaotheorems@theorembackground,
 			style=mdfkao,
 		},
 	]{theorem}
@@ -219,8 +237,10 @@
 	\theoremstyle{kaoremark}
 	\declaretheorem[
 		name=Remark,
+%        title=,
+%        numbered=no,
 		%refname={remark,remarks},
-		refname={remark,remarks},
+		refname={Remark,Remarks},
 		Refname={Remark,Remarks},
 		numberwithin=chapter,
 		mdframed={
@@ -231,7 +251,7 @@
 	\theoremstyle{kaoremark}
 	\declaretheorem[
   name=Disclaimer,
-  refname={disclaimer,disclaimers},
+  refname={Disclaimer,Disclaimers},
   Refname={Disclaimer,Disclaimers},
   numberwithin=chapter,
   mdframed={
@@ -252,18 +272,6 @@
 		},
 	]{example}
 
-	% Theorems using the 'kaoexample' style
-	\theoremstyle{kaoexample}
-	\declaretheorem[
-  name=Update Rule,
-  refname={update rule,update rules},
-  Refname={Update Rule,Update Rules},
-  numberwithin=chapter,
-  mdframed={
-    style=mdfkao,
-  },
-	]{updaterule}
-
 	% Theorems using the 'kaoexercise' style
 	\theoremstyle{kaoexercise}
 	\declaretheorem[
@@ -278,6 +286,29 @@
 			%frametitlebackgroundcolor=\@theorembackground,
 		},
 	]{exercise}
+    
+   	% Theorems using the 'kaoexercise' style
+    \theoremstyle{kaogoal}
+    \declaretheorem[
+        name=Goal,
+        refname={,}, %{Goal,Goals},
+        Refname={,}, %{Goal,Goals},
+        numberwithin=chapter,
+        mdframed={
+            style=mdfkao,
+            backgroundcolor=\kaotheorems@goalbackground,
+            %frametitlebackgroundcolor=\@theorembackground,
+        },
+    ]{goalthrm}
+    
+    \newenvironment{goal}[2]{
+        \let\oldthegoalthrm\thegoalthrm
+        \renewcommand{\thegoalthrm}{#1}% Redefine it to a fixed value
+        \goalthrm[#2]
+    }{
+        \endgoalthrm
+        \addtocounter{goalthrm}{-1}% ...restore theorem counter value and...
+    }
 
 	%\renewcommand{\thetheorem}{\arabic{chapter}.\arabic{section}.\arabic{theorem}}
 	%\renewcommand{\thetheorem}{\arabic{subsection}.\arabic{theorem}}
@@ -350,25 +381,25 @@
 	\theoremstyle{kaoplain}
 	\declaretheorem[
 		name=Theorem,
-		refname={theorem,theorems},
+		refname={Theorem,Theorems},
 		Refname={Theorem,Theorems},
 		numberwithin=chapter,
 	]{theorem}
 	\declaretheorem[
 		name=Proposition,
-		refname={proposition,propositions},
+		refname={Proposition,Propositions},
 		Refname={Proposition,Propositions},
 		sibling=theorem,
 	]{proposition}
 	\declaretheorem[
 		name=Lemma,
-		refname={lemma,lemmas},
+		refname={Lemma,Lemmas},
 		Refname={Lemma,Lemmas},
 		sibling=theorem,
 	]{lemma}
 	\declaretheorem[
 		name=Corollary,
-		refname={corollary,corollaries},
+		refname={Corollary,Corollaries},
 		Refname={Corollary,Corollaries},
 		sibling=theorem,
 	]{corollary}
@@ -377,7 +408,7 @@
 	\theoremstyle{kaodefinition}
 	\declaretheorem[
 		name=Definition,
-		refname={definition,definitions},
+		refname={Definition,Definitions},
 		Refname={Definition,Definitions},
 		numberwithin=chapter,
 	]{definition}
@@ -386,7 +417,7 @@
 	\theoremstyle{kaoremark}
 	\declaretheorem[
 		name=Remark,
-		refname={remark,remarks},
+		refname={Remark,Remarks},
 		Refname={Remark,Remarks},
 		numberwithin=chapter,
 	]{remark}
@@ -395,7 +426,7 @@
 	\theoremstyle{kaoexample}
 	\declaretheorem[
 		name=Example,
-		refname={example,examples},
+		refname={Example,Examples},
 		Refname={Example,Examples},
 		numberwithin=chapter,
 	]{example}
@@ -419,3 +450,78 @@
 	%\renewcommand{\thetheorem}{\arabic{subsection}.\arabic{theorem}}
 	%\renewcommand{\qedsymbol}{$\blacksquare$}
 \fi
+
+
+% TODO move this
+
+\mdfsetup{skipabove=0pt,skipbelow=0pt}%{-.5\topskip}
+\mdfdefinestyle{mdfdims}{
+    skipabove=\topskip,
+    skipbelow=\topskip, % Does not work :(
+    rightmargin=0pt,
+    leftmargin=0pt,
+    innertopmargin=7pt,
+    innerbottommargin=5pt,
+    innerrightmargin=5pt,
+    innerleftmargin=5pt,
+    topline=true,
+    bottomline=true,
+    rightline=true,
+    leftline=true,
+    linewidth=1pt,
+    linecolor=maincolor,
+    roundcorner=5pt,
+    font={\color{maincolor}},
+    backgroundcolor=maincolor!5!white,
+    frametitlerule=false,
+    %	frametitle={\colorbox{maincolor!5!white}{\color{maincolor} \normalfont\bfseries \space Abstract\space}},
+    frametitle={\tcbox{\color{maincolor}\normalfont\textbf{Dimensions}}},
+    frametitleaboveskip=-\ht\strutbox,
+    frametitlealignment=\center,
+}
+
+\RequirePackage{tcolorbox}
+\tcbuselibrary{skins}
+\newtcolorbox{dimsbox}[2][]{
+    colback=maincolor!5!white,
+    colframe=maincolor,fonttitle=\scriptsize\bfseries,
+    colbacktitle=maincolor,enhanced,
+    attach boxed title to top center={yshift=-3mm},
+    width=\marginparwidth,
+    boxrule=1pt,
+    boxsep=0pt,
+    left=0pt, right=0pt, top=3.5mm, bottom=0pt,
+    title={#2},
+%    title={\smash{\raisebox{-11pt}{\includegraphics[height=1.5cm]{figures/bulb-owl2-1}}}},
+    #1
+}
+
+
+\newsavebox{\@sidenotes@dimensionnotebox}
+
+\NewDocumentEnvironment{margindims}{o m s}{%
+    \IfBooleanTF{#3}{\def\par{\let\par\endgraf}}{}% TODO check that all figures are safely put
+    \FloatBarrier%
+    \marginskip{\kaomarginskipabove}%
+    \begin{lrbox}{\@sidenotes@dimensionnotebox}%
+            \begin{dimsbox}{Dimensions}
+                %            \captionsetup{type=figure}%
+%                \def\arraystretch{1.3}
+                \centering
+                \begin{tabular}{#2}
+}{%
+                \end{tabular}%
+            \end{dimsbox}
+    \end{lrbox}%
+    \IfBooleanTF{#3}{\leavevmode}{}%
+    \marginnote[#1]{\usebox{\@sidenotes@dimensionnotebox}}%
+}
+
+\NewDocumentCommand{\marginremark}{O{0pt} m}{%
+%    \leavevmode%
+    \IfValueTF{#1}{%
+        \marginnote[#1]{\begin{remark}#2\end{remark}}%
+    }{%
+        \marginnote{\begin{remark}#2\end{remark}}%
+    }%
+}

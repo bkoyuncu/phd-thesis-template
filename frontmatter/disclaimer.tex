@@ -1,0 +1,34 @@
+\newenvironment{vplace}[1][1]{%
+    \par\vspace*{\stretch{#1}}%
+}{%
+    \vspace*{\stretch{1}}%
+    \par}
+
+
+
+% ===================================================================
+% DISCLAIMER
+% ===================================================================
+{
+    \thispagestyle{empty}
+    
+    \begin{vplace}
+        \centering\LARGE%\fontfamily{QTChanceryType}
+        \itshape
+        
+        Dedicated to Alfonso Born\'as Bayonas.
+        
+        Your family will never forget you.
+    \end{vplace}
+    
+    \raggedright\null\vfill
+    \paragraph{Disclaimer} This style is a modified version of Felix Dangel's thesis template, which in turn uses Federico Marotta's \texttt{kaobook}
+    template based on Ken Arroyo Ohori's doctoral thesis, and I am grateful to all of them for their openness to share their \LaTeX~codes. Otherwise, this thesis would not look nearly the way it does. 
+    %  I am grateful to Frank
+    %  Schneider who added many stylistic features and would like to thank him,
+    %  Katharina Ott, Frederik Kunstner, Julia Grosse, Jonathan Wenger, Matthias
+    %  Werner, Marvin Pf\"ortner, Runa Eschenhagen, Nathanel Bosch, and Andr\'es
+    %  Fern\'andez Rodr\'iguez for their help to improve the text.
+    %
+}
+\cleardoublepage

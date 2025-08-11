@@ -1,0 +1,57 @@
+%\pagelayout{wide} % No margins
+
+\begingroup  % I don't trust the environemnts below
+
+\newcommand\citeallnames{\AtNextCite{\defcounter{maxnames}{99}}\citename}
+
+\NewDocumentCommand{\printpublication}{m m}{%
+    \label{ref:#1}\citetitle{#1} \\ \citeallnames{#1}[author]{author}, in #2, \citeyear{#1}. %
+}
+
+\newcommand\freefootnote[1]{%
+    \let\thefootnote\relax%
+    \footnotetext{#1}%
+    \let\thefootnote\svthefootnote%
+}
+
+\begin{refsection}   
+    \newcommand{\oral}{\textcolor{secondcolor}{\faMicrophone}}
+    \newcommand{\spotlight}{\textcolor{thirdcolor}{\faLightbulbO}}
+    \newcommand{\plagiarized}{\textcolor{sns_orange}{\faCopy}}
+    
+    
+    \chapter{Publications}
+    \epigraph{Plagiarism is the sincerest form of flattery.}{\textit{Oscar Wilde}}
+    
+    The following publications are at the core of my PhD research and covered in this dissertation:
+    %
+    \begin{enumerate}
+        \item[{[I]}] \printpublication{javaloy2020lipschitz}{arXiv}
+        \item[{[II]}] \printpublication{javaloy2021rotograd}{ICLR (\spotlight)}
+        \item[{[III]}] \printpublication{javaloy2022mitigating}{ICML (\spotlight)}
+        \item[{[IV]}] \printpublication{javaloy2023causal}{NeurIPS (\oral)}
+    \end{enumerate}
+    
+    \vspace{2.\baselineskip}
+    
+    The following publications originated during my time as a PhD student but are omitted from this thesis:
+    
+    \begin{enumerate}
+        \setcounter{enumi}{4}
+        \item[{[V]}] \printpublication{javaloy2020text}{Applied Sciences}
+        \item[{[VI]}] \printpublication{javaloy2020preliminary}{Applied Sciences}
+        \item[{[VII]}] \printpublication{NEURIPS2020_c10f4888}{NeurIPS}
+        \item[{[VIII]}] \printpublication{javaloy2023learnable}{ICLR}
+    \end{enumerate}
+    
+%    \printbibliography[
+%    heading=none, 
+%    title={List of Unused Publications}, 
+%    category=mine-unused
+%    ]
+    
+    \freefootnote{ *: Equal contribution;\; \oral: Oral;\; \spotlight: Spotlight.}
+    
+\end{refsection}
+
+\endgroup

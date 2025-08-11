@@ -1,19 +1,20 @@
 % ===================================================================
 % GENERAL PREAMBLE
 
-\documentclass[
-				a4paper,
+\documentclass[ a4paper,
 				fontsize=11pt,
 				twoside=true,
 				numbers=noenddot,
-        open=any,
-        secnumdepth=2,
+                open=any,
+                secnumdepth=2,
 %				draft % Shows black boxes next to overful hboxes (ignore the errors)
 			   ]{preamble/thesis}
 
-\usepackage[ngerman,english]{babel} 		% English language/hyphenation
-\usepackage[dissertation, internal]{preamble/tuetitle}
+%\usepackage[main=british,ngerman,spanish]{babel} 		% English language/hyphenation
+\usepackage[main=british]{babel} 		% English language/hyphenation
+\usepackage[dissertation, internal]{preamble/udstitle}
 
+\usepackage[T1]{fontenc}
 
 % ===================================================================
 % COLORS
@@ -21,51 +22,12 @@
 \usepackage{xcolor} 				% To define colors
 \input{preamble/colors.tex}			% Pre-define a bunch of often-used colors
 
-\colorlet{maincolor}{TUblue}		% Main color, used for headings, etc.
-\colorlet{secondcolor}{TUred}		% Secondary color, used for references, etc.
-\colorlet{thirdcolor}{TUgold}		% Tertiary color, used for citations, etc.
-\colorlet{fourthcolor}{TUgold}		% Fourth color, used for URLs, etc.
-\colorlet{lightgraycolor}{TUdark!50}% A gray color, used for lines, etc.
-\colorlet{darkgraycolor}{TUdark!80}	% A dark color, used for numbers, etc.
-
-% Optimizer colors
-\definecolor{adabelief}{HTML}{63FFA4}
-\definecolor{amsbound}{HTML}{FFFF00}
-\definecolor{amsgrad}{HTML}{A63D08}
-\definecolor{adabound}{HTML}{FF8C00}
-\definecolor{adadelta}{HTML}{735859}
-\definecolor{adagrad}{HTML}{F3CC9A}
-\definecolor{adam}{HTML}{F90004}
-\definecolor{lookaheadmomentum}{HTML}{008B8B}
-\definecolor{lookaheadradam}{HTML}{35CC38}
-\definecolor{momentum}{HTML}{00CBFF}
-\definecolor{nag}{HTML}{991bf5}
-\definecolor{nadam}{HTML}{8E8E05}
-\definecolor{radam}{HTML}{FF00FF}
-\definecolor{rmsprop}{HTML}{000000}
-\definecolor{sgd}{HTML}{1E3CFF}
-\definecolor{otheropt}{HTML}{B2B2B2}
-
-% DeepOBS colors
-\colorlet{deepobsclass}{TUgold}
-\colorlet{deepobscli}{TUdark}
-\colorlet{deepobsdata}{TUblue}
-\colorlet{deepobsscript}{TUred}
-
-\colorlet{deepobsimageclass}{TUgold}
-\colorlet{deepobsgenerative}{TUblue}
-\colorlet{deepobsnlp}{TUred}
-\colorlet{deepobstoy}{TUdark}
-
-\colorlet{deepobssmall}{SNSgreen!45}
-\colorlet{deepobslarge}{SNSorange!45}
-
-\colorlet{deepobsgood}{SNSgreen!70}
-\colorlet{deepobsbad}{TUred!70}
-
-% Benchmark colors
-\colorlet{lrschedules}{maincolor}
-\colorlet{lrbg}{lightgraycolor!25}
+\colorlet{maincolor}{SBblue}		% Main color, used for headings, etc.
+\colorlet{secondcolor}{SBred}		% Secondary color, used for references, etc.
+\colorlet{thirdcolor}{SBgold}		% Tertiary color, used for citations, etc.
+\colorlet{fourthcolor}{SBgold}		% Fourth color, used for URLs, etc.
+\colorlet{lightgraycolor}{SBdark!50}% A gray color, used for lines, etc.
+\colorlet{darkgraycolor}{SBdark!80}	% A dark color, used for numbers, etc.
 
 % ===================================================================
 % GRAPHICS
@@ -76,15 +38,13 @@
 \captionsetup{labelfont={labelcolor,bf}} 	% e.g. coloring the word "Figure" in caption
 \usepackage{subcaption}				% For subcaptioning images
 \usepackage{fancybox}				% Allows shadowbox around figure (for screenshot)
+\usepackage{fontawesome}
+\usepackage{standalone}
 
-% path where the \includegrahics looks for figures
 \graphicspath{
-  {../repos/cockpit-paper/fig/03_scalar_deep/output/}
-  {../repos/vivit-paper/tex/paper/}
+    {figures}
 }
 
-\newcommand{\goldenRatio}{1.61803398875}
-\newcommand{\goldenRatioInv}{0.61803398875}
 
 % Tikz
 \usetikzlibrary{
@@ -124,7 +84,7 @@
 \newlength{\thesiswidewidth}
 \setlength{\thesiswidewidth}{457.8024pt}
 
-\pdfsuppresswarningpagegroup=1		% Surpress the "PDF inclusion: multiple pdfs with apge group..." warning (https://tex.stackexchange.com/questions/76273/multiple-pdfs-with-page-group-included-in-a-single-page-warning)
+\pdfsuppresswarningpagegroup=1		% Supress the "PDF inclusion: multiple pdfs with page group..." warning (https://tex.stackexchange.com/questions/76273/multiple-pdfs-with-page-group-included-in-a-single-page-warning)
 
 % Customized shadow color for shadowbox
 \makeatletter
@@ -165,6 +125,7 @@
 % Checkmarks
 \newcommand{\cmark}{\ding{51}}%
 \newcommand{\xmark}{\ding{55}}%
+\newcommand{\minusmark}{\text{-}} % minus mark
 
 % Use Computer Modern Symbols for mathcal
 \DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
@@ -182,6 +143,8 @@
 \usepackage{varioref}
 \usepackage{hyperref}
 \usepackage[capitalize,nameinlink,noabbrev]{cleveref}
+\usepackage{epigraph}
+
 
 % Customization of hyperref options
 \hypersetup{
@@ -197,8 +160,31 @@
 	citecolor = thirdcolor,
 	linkcolor = secondcolor,
 	urlcolor = fourthcolor,
+	final, % so that we have links in draft mode
 }
 
+
+%----------------------------------------------------------------------------------------
+%	CLEVEREF CUSTOMISATION
+%----------------------------------------------------------------------------------------
+
+% Hyperlink the page reference as well
+\let\oldvpageref\vpageref
+\renewcommand{\vpageref}[1]{\hyperref[#1]{\oldvpageref{#1}}}
+
+% Remove parentheses around equations
+\creflabelformat{equation}{#2\textup{#1}#3}
+
+% TODO not sure if I like this one
+%% Set the refname for subsections
+\newcommand{\subsectionname}{Subsection}
+\newcommand{\subsectionnameplural}{Subsections}
+\crefname{subsection}{\subsectionname}{\subsectionname}
+\Crefname{subsection}{\subsectionname}{\subsectionnameplural}
+
+%% Set the refname for side notes
+\crefname{sidenote}{side note}{side notes}
+\Crefname{sidenote}{Side note}{Side notes}
 
 % ===================================================================
 % MATH
@@ -210,55 +196,76 @@
 
 \usepackage{amsfonts}				% blackboard math symbols
 \usepackage{amsmath}				% for all basic math operations
+\usepackage{interval}				% for typesetting intervals
 \usepackage{amssymb}
+\usepackage{dsfont}					% indicator function
 \usepackage{nicefrac}				% compact symbols for 1/2, etc.
+\usepackage{cancel}					% To "cancel" numbers in equations
 %\usepackage{ntheorem}				% required by kaobook (otherwise \theoremstyle is not defined)
-\usepackage{siunitx}  				% SI units (used for run times)
+\usepackage[
+    separate-uncertainty=true, 
+    output-exponent-marker = \text{e},
+    exponent-product={},
+    retain-zero-uncertainty=true
+]{siunitx}  						% SI units (used for run times)
 \usepackage{xfrac}					% For slanted fractions "sfrac" like the nicefrac
 \usepackage{bm}						% Offers \bm to create bold math (used by Goodfellow)
 \usepackage{derivative}				% Handy commands for typesetting derivatives
 \usepackage{mathtools}				% for vcentcolon a centered colon used in \eqdef
+\usepackage{etoolbox}
 % Load mathematical packages for theorems and related environments
-\usepackage[framed=true,definitionbackground=lightgraycolor!25,theorembackground=lightgraycolor!25,
-examplebackground=lightgraycolor!25]{preamble/kaotheorems}
+\usepackage[framed=true,background=maincolor!5!white]{preamble/kaotheorems}
+
+\usepackage{annotate-equations}		% https://ctan.org/pkg/annotate-equations?lang=en
+\renewcommand{\eqnhighlightheight}{\vphantom{\hat{H}_{\theta}}\mathstrut} % (try to) make color boxes of equal height
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% SIUNITX CONFIGURATION
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\sisetup{product-units=single}  % so that the units in a product only appear at the end 
+
+\DeclareSIUnit{\microsecond}{\SIUnitSymbolMicro s}  % I am not sure this is necessary
+\DeclareSIUnit{\px}{px}  % pixels
+\DeclareSIUnit{\million}{M}
 
 % Bugfix: https://tex.stackexchange.com/questions/262142/thmtools-notebraces-bug
-\makeatletter
-%%% from amsthm.sty
-\def\thmhead@plain#1#2#3{%
-	\thmname{#1}\thmnumber{\@ifnotempty{#1}{ }\@upn{#2}}%
-	%%% the line below had (##3)
-	\thmnote{ {\the\thm@notefont\thm@lparen#3\thm@rparen}}}
-
-%%% from thm-amsthm.sty
-\def\thmt@setheadstyle#1{%
-	\thmt@style@headstyle{%
-		\def\NAME{\the\thm@headfont ##1}%
-		\def\NUMBER{\bgroup\@upn{##2}\egroup}%
-		%%% the line below had (##3)
-		\def\NOTE{\if=##3=\else\bgroup\thmt@space\the\thm@notefont\thm@lparen##3\thm@rparen\egroup\fi}%
-	}%
-	\def\thmt@tmp{#1}%
-	\@onelevel@sanitize\thmt@tmp
-	%\tracingall
-	\ifcsname thmt@headstyle@\thmt@tmp\endcsname
-	\thmt@style@headstyle\@xa{%
-		\the\thmt@style@headstyle
-		\csname thmt@headstyle@#1\endcsname
-	}%
-	\else
-	\thmt@style@headstyle\@xa{%
-		\the\thmt@style@headstyle
-		#1%
-	}%
-	\fi
-	%\showthe\thmt@style@headstyle
-}
-%%% the line below had (#3)
-\def\thmt@embrace#1#2\thm@lparen#3\thm@rparen{#1#3#2}
-%%% added for default
-\def\thm@lparen{(}\def\thm@rparen{)}
-\makeatother
+%\makeatletter
+%%%% from amsthm.sty
+%\def\thmhead@plain#1#2#3{%
+%	\thmname{#1}\thmnumber{\@ifnotempty{#1}{ }\@upn{#2}}%
+%	%%% the line below had (##3)
+%	\thmnote{ {\the\thm@notefont\thm@lparen#3\thm@rparen}}}
+%
+%%%% from thm-amsthm.sty
+%\def\thmt@setheadstyle#1{%
+%	\thmt@style@headstyle{%
+%		\def\NAME{\the\thm@headfont ##1}%
+%		\def\NUMBER{\bgroup\@upn{##2}\egroup}%
+%		%%% the line below had (##3)
+%		\def\NOTE{\if=##3=\else\bgroup\thmt@space\the\thm@notefont\thm@lparen##3\thm@rparen\egroup\fi}%
+%	}%
+%	\def\thmt@tmp{#1}%
+%	\@onelevel@sanitize\thmt@tmp
+%	%\tracingall
+%	\ifcsname thmt@headstyle@\thmt@tmp\endcsname
+%	\thmt@style@headstyle\@xa{%
+%		\the\thmt@style@headstyle
+%		\csname thmt@headstyle@#1\endcsname
+%	}%
+%	\else
+%	\thmt@style@headstyle\@xa{%
+%		\the\thmt@style@headstyle
+%		#1%
+%	}%
+%	\fi
+%	%\showthe\thmt@style@headstyle
+%}
+%%%% the line below had (#3)
+%\def\thmt@embrace#1#2\thm@lparen#3\thm@rparen{#1#3#2}
+%%%% added for default
+%\def\thm@lparen{(}\def\thm@rparen{)}
+%\makeatother
 
 \xspaceaddexceptions{]}
 
@@ -337,8 +344,9 @@ examplebackground=lightgraycolor!25]{preamble/kaotheorems}
 \DeclareRobustCommand\robustInlinecode[1]{\inlinecode{#1}}
 
 \usepackage{listings}				% For full code blocks
+\usepackage{lstautogobble}
 
-\input{preamble/lstlinebgrd.tex}	% Inclue lstlinebgrd (with some fixes) for highlighting code lines
+\input{preamble/lstlinebgrd.tex}	% Include lstlinebgrd (with some fixes) for highlighting code lines
 
 \lstdefinestyle{thesisstyle}{
 	backgroundcolor=\color{maincolor!5!white},
@@ -347,7 +355,7 @@ examplebackground=lightgraycolor!25]{preamble/kaotheorems}
 	numberstyle=\tiny\color{maincolor},
 	stringstyle=\bfseries\color{thirdcolor},
 	basicstyle=\ttfamily\footnotesize,
-  xleftmargin=3.2ex,
+    xleftmargin=3.2ex,
 	breakatwhitespace=false,
 	breaklines=true,
 	captionpos=t,
@@ -358,10 +366,86 @@ examplebackground=lightgraycolor!25]{preamble/kaotheorems}
 	showstringspaces=false,
 	showtabs=false,
 	tabsize=4,
-  escapeinside={(@}{@)},
-  rulecolor=\color{maincolor},
+    escapeinside={(@}{@)},
+    rulecolor=\color{maincolor},
+    print,
 }
-\lstset{style=thesisstyle}
+\lstset{
+    style=thesisstyle, 
+    xleftmargin=.04\textwidth,
+    autogobble=true,
+}
+
+% Define an algorithm environment using the listings package
+
+\newcounter{nalg}[chapter] % defines algorithm counter for chapter-level
+\renewcommand{\thenalg}{\thechapter .\arabic{nalg}} %defines appearance of the algorithm counter
+\DeclareCaptionLabelFormat{algocaption}{Algorithm \thenalg} % defines a new caption label as Algorithm x.y
+
+\lstnewenvironment{lstalgorithm}[1][] %defines the algorithm listing environment
+{   
+    \refstepcounter{nalg} %increments algorithm number
+    \captionsetup{labelformat=algocaption,labelsep=colon} %defines the caption setup for: it ises label format as the declared caption label above and makes label and caption text to be separated by a ':'
+    \lstset{ %this is the style
+        mathescape=true,
+        numbers=left, 
+        numberstyle=\tiny,
+%        basicstyle=\scriptsize, % TODO need to decide on this one
+        keywordstyle=\color{black}\bfseries\em,
+        keywords={,input, output, return, for, in, if, else, while, begin, end, do, done, function,} %add the keywords you want, or load a language as Rubens explains in his comment above.
+        numbers=left,
+        style=thesisstyle,
+        autogobble=true,
+        morecomment=[l]{\#},
+        escapechar=\&,
+        framerule=0.5pt,
+        #1 % this is to add specific settings to an usage of this environment (for instance, the caption and referable label)
+    }
+}
+{}
+
+%\newtcbinputlisting{xmlListing}{colframe=background, colback=background, listing options={language=xml,columns=fullflexible},listing only }
+
+\lstdefinestyle{algorithmstyle}{
+    backgroundcolor={},
+    mathescape=true,
+    numbers=left, 
+    numberstyle=\tiny,
+    %        basicstyle=\scriptsize, % TODO need to decide on this one
+    keywordstyle=\color{black}\bfseries\em,
+    keywords={,input, return, for, in, if, else, while, begin, end, do, done, function,} %add the keywords you want, or load a language as Rubens explains in his comment above.
+    numbers=left,
+    style=thesisstyle,
+    morecomment=[l]{\#},
+    escapechar=\&,
+    framerule=0pt,
+}
+% TODO Clean up above
+
+\usepackage{tcolorbox}
+\usepackage{moreverb}
+
+\newenvironment{algorithmfloat}{%
+    \table[!hbtp]
+    \refstepcounter{nalg} %increments algorithm number
+    \captionsetup{labelformat=algocaption,labelsep=colon} %defines the caption setup for: it ises label format as the declared caption label above and makes label and caption text to be separated by a ':'
+}{%
+    \endtable
+}
+
+\newcommand{\readalgorithm}[1]{%
+    \begin{mdframed}[%
+        innerrightmargin=0pt, innerbottommargin=0pt, 
+        innerleftmargin=\dimexpr-7pt-1.9pt, innertopmargin=\dimexpr0.25\ht\strutbox,
+        userdefinedwidth=\dimexpr\linewidth-7pt-1.9pt,
+        linewidth=0.5pt, linecolor=maincolor, topline=false, bottomline=false, rightline=false,
+        backgroundcolor=maincolor!5!white
+        ]
+        \lstinputlisting[style=algorithmstyle]{#1}
+    \end{mdframed}
+}
+
+\crefname{nalg}{Algorithm}{Algorithm}
 
 % ===================================================================
 % CITATION
@@ -390,9 +474,34 @@ examplebackground=lightgraycolor!25]{preamble/kaotheorems}
 
 \addbibresource{bibliography/bibliography.bib}	% Bibliography file
 
+% https://tex.stackexchange.com/questions/99316/symbol-for-external-links
+\newcommand{\ExternalLink}{%
+    \tikz[x=1.2ex, y=1.2ex, baseline=-0.05ex]{% 
+        \begin{scope}[x=1ex, y=1ex]
+            \clip (-0.1,-0.1)
+            --++ (-0, 1.2)
+            --++ (0.6, 0)
+            --++ (0, -0.6)
+            --++ (0.6, 0)
+            --++ (0, -1);
+            \path[draw,
+            line width = 0.9,
+            rounded corners=0.5]
+            (0,0) rectangle (1,1);
+        \end{scope}
+        \path[draw, line width = 0.9] (0.5, 0.5)
+        -- (1, 1);
+        \path[draw, line width = 0.9] (0.6, 1)
+        -- (1, 1) -- (1, 0.6);
+    }
+}
+\DeclareFieldFormat{citeurl}{\href{#1}{\small\ExternalLink}}
+\newrobustcmd*{\citefirstlastauthor}{\AtNextCite{\DeclareNameAlias{labelname}{given-family}}\citeauthor}
+
+
 % Customize what appears in the margin citation (removed the ":")
 \renewcommand{\formatmargincitation}[1]{%
-	\parencite{#1} \citeauthor*{#1} (\citeyear{#1}), \citetitle{#1}%
+	\parencite{#1} \citeauthor*{#1} (\citeyear{#1}), \citetitle{#1}\xspace\citeurl{#1}%
 }
 
 % A custom command for only creating a marginnote with the citation
@@ -403,8 +512,8 @@ examplebackground=lightgraycolor!25]{preamble/kaotheorems}
 \renewbibmacro{in:}{}			% Remove "in:" from Bibliography
 
 % Put quotes around the title of misc entries (e.g. arXiv papers) similar to "regular" paper
-\DeclareFieldFormat[misc,book,techreport]{citetitle}{\mkbibquote{#1\isdot}}
-\DeclareFieldFormat[misc,book,techreport]{title}{\mkbibquote{#1\isdot}}
+\DeclareFieldFormat[article,inproceedings,misc,book,techreport]{citetitle}{\mkbibquote{#1\addperiod}}
+\DeclareFieldFormat[article,inproceedings,misc,book,techreport]{title}{\mkbibquote{#1\addperiod}}
 
 % Publisher in Book in italics (similar to paper)
 \DeclareListFormat{publisher}{%
@@ -421,11 +530,118 @@ examplebackground=lightgraycolor!25]{preamble/kaotheorems}
 %	\newunit}
 
 
+% from https://tex.stackexchange.com/questions/468623/indicating-joint-first-authorship-through-special-markup-in-biblatex-biber
+\newcommand{\mkbibcoauthor}[1]{%
+    \ifitemannotation{jointfirst}%
+    {{#1}*}%   e.g., J͟o͟h͟n͟_D͟o͟e͟* (if jointfirst)
+    {#1}%                e.g., John Doe  (otherwise)
+}
+
+
+% This command tell biblatex to bold an author
+% Taken from here: https://tex.stackexchange.com/questions/33330/make-one-authors-name-bold-every-time-it-shows-up-in-the-bibliography
+\newcommand{\makeauthorbold}[1]{%
+  \DeclareNameFormat{author}{%
+    \ifthenelse{\value{listcount}=1}
+    {%
+      {\expandafter\ifstrequal\expandafter{\namepartfamily}{#1}{\mkbibbold{\mkbibcoauthor{\namepartfamily\addcomma\addspace \namepartgiveni}}}{\mkbibcoauthor{\namepartfamily\addcomma\addspace \namepartgiveni}}}
+      %
+    }{\ifnumless{\value{listcount}}{\value{liststop}}
+        {\expandafter\ifstrequal\expandafter{\namepartfamily}{#1}{\mkbibbold{\mkbibcoauthor{\addcomma\addspace\namepartfamily\addcomma\addspace\namepartgiveni}}}{\mkbibcoauthor{\addcomma\addspace\namepartfamily\addcomma\addspace\namepartgiveni}}}
+        {\expandafter\ifstrequal\expandafter{\namepartfamily}{#1}{\mkbibbold{\mkbibcoauthor{\addcomma\addspace and\addspace\namepartfamily\addcomma\addspace\namepartgiveni\addcomma\isdot}}}{\mkbibcoauthor{\addcomma\addspace and\addspace\namepartfamily\addcomma\addspace\namepartgiveni\addcomma\isdot}}}%
+      }
+    \ifthenelse{\value{listcount}<\value{liststop}}{\addcomma\space}{} % TODO add "and" 
+%    \ifthenelse{\value{listcount}=\numexpr\value{liststop}-1\relax}{and }{}
+  }
+}
+
+\makeauthorbold{Javaloy}
+
+
+% ===================================================================
+% GLOSSARIES
+
+% Example 21: One hyper link per entry per chapter
+\glsaddstoragekey{chapter}{0}{\glschapnum}
+
+%\renewcommand*{\glslinkpostsetkeys}{%
+%    \edef\currentchap{\arabic{chapter}}%
+%    \ifnum\currentchap=\glschapnum{\glslabel}\relax
+%    \setkeys{glslink}{hyper=false}%
+%    \else
+%    \glsifhyperon{\glsfieldxdef{\glslabel}{chapter}{\currentchap}}%
+%    \fi
+%}
+
+% Changes the hyper link color after first use per chapter
+\makeatletter
+\newcommand*{\glsplainhyperlink}[2]{%
+    \begingroup%
+    \edef\currentchap{\arabic{chapter}}%
+    \ifnum\currentchap=\glschapnum{\glslabel}\relax%
+        \hypersetup{hidelinks}%
+        \hyperlink{#1}{#2}%
+    \else%
+%        \glsfieldxdef{\glslabel}{chapter}{\currentchap}%
+        \hyperlink{#1}{#2}%
+    \fi%
+    \endgroup%
+}
+\let\@glslink\glsplainhyperlink
+
+\renewcommand{\glspostlinkhook}{%
+    \edef\currentchap{\arabic{chapter}}%
+    \ifnum\currentchap=\glschapnum{\glslabel}\relax%
+    \else%
+        \glsfieldxdef{\glslabel}{chapter}{\currentchap}%
+    \fi%
+}
+
+\let\oldifglsused\ifglsused
+\renewcommand*{\ifglsused}[3]{%
+    \edef\currentchap{\arabic{chapter}}%
+    \ifnum\currentchap=\glschapnum{\glslabel}\relax%
+        #2%
+    \else%
+        #3%
+    \fi%
+}
+
+\AtEndDocument{%
+    % Glossaries uses the old command to decide if write the prevcount to the aux file
+    \let\ifglsused\oldifglsused% 
+}
+    
+\makeatother
+
+
+% Enable cgls commands
+\glsenableentrycount
+
+% Custom glossary style
+% TODO this one or 'super'?
+% Reference in /usr/share/texlive/texmf-dist/tex/latex/glossaries/styles
+\newglossarystyle{myglossarystyle}{%
+    \setglossarystyle{tree}% base this style on the list style
+    
+    % make nothing happen between groups:
+    \renewcommand{\glsgroupskip}{}%
+    \renewcommand{\glossentry}[2]{%
+        \hangindent0pt\relax
+        \parindent0pt\relax
+        \glsentryitem{##1}\glstreenamefmt{\glstarget{##1}{\glossentryname{##1}}}%
+        \ifglshassymbol{##1}{\space(\glossentrysymbol{##1})}{}%
+        \glstreepredesc\Glossentrydesc{##1}\glspostdescription\space (Pages ##2)\par
+    }%
+    
+}
+
 % ===================================================================
 % TABLES
 
 \usepackage{tabularx}			% Tables with flexible column width
 \usepackage{multirow}			% Allow cells spread over multiple rows
+\usepackage{bigdelim}			% Defines big parentheses/brackets/etc for tables
 \usepackage{colortbl}			% define BG colors of cells via \cellcolor
 \usepackage{makecell}			% Multi-lined tabular cells (used in DeepOBS results table)
 
@@ -436,12 +652,11 @@ examplebackground=lightgraycolor!25]{preamble/kaotheorems}
 \renewcommand\theadgape{\Gape[4pt]}
 \renewcommand\cellgape{\Gape[4pt]}
 
-% New columntypes for centering columns
-\newcolumntype{C}{>{\centering\arraybackslash}p{3cm}}
-\newcolumntype{Y}{>{\centering\arraybackslash}X}
-
-\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
-
+% New column types for tables with mathmode
+\usepackage{array}   % for \newcolumntype macro
+\newcolumntype{L}{>{$}l<{$}} % math-mode version of "l" column type
+\newcolumntype{C}{>{$}c<{$}} % math-mode version of "c" column type
+\newcolumntype{R}{>{$}r<{$}} % math-mode version of "r" column type
 
 % ===================================================================
 % TODONOTES
@@ -462,6 +677,28 @@ examplebackground=lightgraycolor!25]{preamble/kaotheorems}
 % Only show sections in margin TOC (don't show subsections, etc.)
 \setcounter{margintocdepth}{\sectiontocdepth}
 
+
+\newcommand{\showlocaltoc}{%
+    \begingroup%
+    \def\par{\let\par\endgraf}%
+    \etocsetnexttocdepth{2}%
+    \setcounter{margintocdepth}{\subsectiontocdepth}%
+    \margintoc[-\kaomarginskipabove]% TODO better fix for vertical spacing?
+    \setcounter{margintocdepth}{\sectiontocdepth}%
+    \endgroup%
+}
+
+
+% This is a hack to keep all margin notes in the correct side: see https://tex.stackexchange.com/questions/236334/sidenotes-appear-on-the-wrong-side-for-tufte-latex-documents
+\usepackage{mparhack}  
+
+% Adri: I added a 0pt white space in the marginnotes so that they are properly placed when used at the beginning of a paragraph
+% TODO fix
+% \leavevmode
+% see https://latexref.xyz/_005csbox-_0026-_005csavebox.html
+% https://tex.stackexchange.com/questions/315258/prevent-marginnote-from-creating-extra-paragraph
+%\pretocmd{\marginnote}{\makebox[0pt]{ }}{}{}
+
 % Move section numbers in margin
 %\newcommand*{\numberinmargin}[1]{%
 %	\makebox[0pt][r]{#1\autodot\hskip\marginparsep}}
@@ -479,7 +716,7 @@ examplebackground=lightgraycolor!25]{preamble/kaotheorems}
 \renewcommand*{\sectionmarkformat}{\textbf{\thesection}\enskip\color{maincolor}}
 
 % Call TOC "Table of Contents" instead of "Contents"
-\addto\captionsenglish{% Replace "english" with the language you use
+\addto\captionsbritish{% Replace "english" with the language you use
 	\renewcommand{\contentsname}%
 	{Table of Contents}%
 }
@@ -490,16 +727,21 @@ examplebackground=lightgraycolor!25]{preamble/kaotheorems}
 \DeclareTOCStyleEntries[pagenumberwidth=2.5em, entryformat=\tocpartstyle]{tocline}{part}%
 
 % Rename Listing to Algorithm
-\renewcommand{\lstlistingname}{Procedure}% Listing -> Procedure
-\crefname{listing}{procedure}{Procedure}
-
+\renewcommand{\lstlistingname}{Algorithm}% Listing -> Procedure
+\crefname{listing}{algorithm}{Algorithm}
 
 % ===================================================================
 % OTHER (ordered here for special reasons)
 
 \usepackage{csquotes}				% English quotes
+\usepackage[begintext=``, endtext='']{quoting}  % to put marks when quoting
+\SetBlockEnvironment{quoting}  % TODO indent first does not work
+\SetBlockThreshold{0} 
+
 \usepackage{scrhack}
 \usepackage{xurl}					% Allow line-breaks in URLs (loaded after biblatex)
+
+\usepackage{suffix}
 
 % ===================================================================
 % INPUT
@@ -518,6 +760,44 @@ examplebackground=lightgraycolor!25]{preamble/kaotheorems}
   \tablename~\thetable%
   % \autodot% DELETED
 }
+
+
+
+% Redefine the paragraph environment to add a period at the end (yes, I am lazy)
+% from here: https://tex.stackexchange.com/questions/328355/add-a-period-after-each-paragraph-title
+%\makeatletter
+%\NewCommandCopy\latexparagraph\paragraph
+%\RenewDocumentCommand{\paragraph}{sO{#3}m}{%
+%  \IfBooleanTF{#1}
+%    {\latexparagraph*{\maybe@addperiod{#3}}}
+%    {\latexparagraph[#2]{\maybe@addperiod{#3}}}%
+%}
+%\newcommand{\maybe@addperiod}[1]{%
+%  #1\@addpunct{.}%
+%}
+%\makeatother
+
+
+% This one is from here:
+% https://tex.stackexchange.com/questions/685660/automatically-add-a-final-period-if-argument-of-paragraph-does-not-end-with-a
+\NewCommandCopy\latexparagraph\paragraph
+\RenewDocumentCommand{\paragraph}{sO{#3}m}{%
+  \IfBooleanTF{#1}
+    {\latexparagraph*{\maybeaddperiod{#3}}}
+    {\latexparagraph[#2]{\maybeaddperiod{#3}}}%
+}
+
+\ExplSyntaxOn
+\NewDocumentCommand{\maybeaddperiod}{m}
+ {
+  \userninefourtwoninethree_maybeaddperiod:n { #1 }
+ }
+
+\cs_new_protected:Nn \userninefourtwoninethree_maybeaddperiod:n
+ {
+  \regex_match:nnTF { .*[\!\?\.] \Z } { #1 } { #1 } { #1. }
+ }
+\ExplSyntaxOff
 
 %%% Local Variables:
 %%% mode: latex

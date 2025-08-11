@@ -3,7 +3,7 @@
 %
 % Without hyphens: grammatically wrong, but the university wants it so...
 %
-% Derived from the original tuetitle package with changes by me (Frank Schneider)
+% Derived from the original udstitle package with changes by me (Frank Schneider)
 %
 % Derived by the tuhhtitle.sty file:
 % Titelei fÃ¼r die Technische UniversitÃ¤t Hamburg-Harburg
@@ -12,10 +12,10 @@
 % Redefines the \maketitle command to produce university-approved title page.
 % Details and examples are at the end of this file.
 %
-% This work consists of the file tuetitle.sty only.
+% This work consists of the file udstitle.sty only.
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{preamble/tuetitle}[2018/06/27 v3.2]
+\ProvidesPackage{preamble/udstitle}[2018/06/27 v3.2]
 
 \newif\if@internal@titlepage
 \DeclareOption{internal}{\@internal@titlepagetrue}
@@ -29,39 +29,57 @@
 \ProcessOptions\relax
 
 \newcommand*{\@birthplace}{%
-	\PackageError{tuetitle}{\string\birthplace\space missing}{%
+	\PackageError{udstitle}{\string\birthplace\space missing}{%
 		You have to use \string\birthplace\space to set up the author's birthplace.}%
 }
 \newcommand*{\birthplace}[1]{\gdef\@birthplace{#1}}
 
 \newcommand*{\@submissionyear}{\@arabic{\year}%
-	\PackageWarningNoLine{tuetitle}{\string\submissionyear\space missing, current year assumed}}
+	\PackageWarningNoLine{udstitle}{\string\submissionyear\space missing, current year assumed}}
 \newcommand*{\submissionyear}[1]{\gdef\@submissionyear{#1}}
 
 
 \if@internal@titlepage
 \newcommand*{\@dean}{%
-	\PackageError{tuetitle}{\string\dean\space missing}{%
+	\PackageError{udstitle}{\string\dean\space missing}{%
 		You have to use \string\dean\space to set up the faculty dean.}%
 }
 \newcommand*{\dean}[1]{\gdef\@dean{#1}}
 
+
+\newcommand*{\@chair}{%
+	\PackageError{udstitle}{\string\chair\space missing}{%
+		You have to use \string\chair\space to set up the chair of the examination board.}%
+}
+\newcommand*{\chair}[1]{\gdef\@chair{#1}}
+
+
 \newcommand*{\@experts}{%
-	\PackageError{tuetitle}{\string\experts\space missing}{%
+	\PackageError{udstitle}{\string\experts\space missing}{%
 		You have to use \string\experts\space to set up the experts,\MessageBreak
 		e.g. `\string\experts{Name of the First Expert\string\and\space
 			Name of the Second Expert}'.}%
 }
 \newcommand*{\experts}[1]{\gdef\@experts{#1}}
 
+\newcommand*{\@assistant}{%
+	\PackageError{udstitle}{\string\assistant\space missing}{%
+		You have to use \string\assistant\space to set up the academic assistant of the examination board.}%
+}
+\newcommand*{\assistant}[1]{\gdef\@assistant{#1}}
+
 \newcommand*{\dateoforalexamination}[1]{\gdef\@date{#1}}
 \else
-\newcommand*{\dean}[1]{\PackageWarning{tuetitle}{No \string\dean\space necessary\MessageBreak in external title page}}
-\newcommand*{\experts}[1]{\PackageWarning{tuetitle}{No \string\experts\space necessary\MessageBreak in external title page}}
+\newcommand*{\dean}[1]{\PackageWarning{udstitle}{No \string\dean\space necessary\MessageBreak in external title page}}
+\newcommand*{\chair}[1]{\PackageWarning{udstitle}{No \string\chair\space necessary\MessageBreak in external title page}}
+\newcommand*{\assistant}[1]{\PackageWarning{udstitle}{No \string\assistant\space necessary\MessageBreak in external title page}}
+\newcommand*{\experts}[1]{\PackageWarning{udstitle}{No \string\experts\space necessary\MessageBreak in external title page}}
 \newcommand*{\dateoforalexamination}[1]%
-{\PackageWarning{tuetitle}{No \string\dateoforalexamination\space necessary\MessageBreak in external title page}}
+{\PackageWarning{udstitle}{No \string\dateoforalexamination\space necessary\MessageBreak in external title page}}
 \fi
 
+
+%TODO adapt this
 
 \renewcommand*{\maketitle}{%
 	\begin{titlepage}
@@ -74,8 +92,8 @@
 			{\fontsize{14.4}{18}\bfseries\sffamily Dissertation}\\[0pt]
 			\vspace*{5pt}
 			{\fontsize{12}{14}\sffamily \fontseries{l}\selectfont%
-				der Mathematisch-Naturwissenschaftlichen Fakult\"{a}t\\[2.5pt]
-				der Eberhard Karls Universit\"{a}t T\"{u}bingen\\[2.5pt]
+				der Fakult\"{a}t f\"{u}r Mathematik und Informatik\\[2.5pt]
+				der Universit\"{a}t des Saarlandes\\[2.5pt]
 				zur Erlangung des Grades eines\\[2.5pt]
 				Doktors der Naturwissenschaften\\[2.5pt]
 				(Dr.\ rer.\ nat.)}\\}
@@ -85,24 +103,28 @@
 		\vspace*{\stretch{2}}
 		{\fontsize{12}{14}\sffamily \fontseries{l}\selectfont vorgelegt von}\\[0pt]
 		{\Large\sffamily\strut\ignorespaces\@author}\\[2pt]
-		{\fontsize{12}{14}\sffamily \fontseries{l}\selectfont aus \@birthplace}\\[0pt]
+%		{\fontsize{12}{14}\sffamily \fontseries{l}\selectfont aus \@birthplace}\\[0pt]
 		\vspace*{\stretch{1}}
-		{\fontsize{12}{14}\sffamily \fontseries{l}\selectfont T\"{u}bingen\\[2.5pt] \@submissionyear}
+		{\fontsize{12}{14}\sffamily \fontseries{l}\selectfont Saarbr\"{u}cken\\[2.5pt] \@submissionyear}
 		\clearpage\normalsize
 		%
 		\if@phd\if@internal@titlepage
 		\thispagestyle{empty}\raggedright\null\vfill
-		Gedruckt mit Genehmigung der Mathematisch-Naturwissenschaftlichen Fakult\"at der
-		Eberhard Karls Universit\"at T\"ubingen.\par\bigskip\bigskip\bigskip\noindent
+		Gedruckt mit Genehmigung der Fakult\"{a}t f\"{u}r Mathematik und Informatik der
+		Universit\"{a}t des Saarlandes.\par\bigskip\bigskip\bigskip\noindent
 		\count@=\@ne
 		\def\and{\unskip\strut\\
 			\global\advance\count@\@ne
-			\the\count@.~Berichterstatter: & \ignorespaces}%
+			\hspace{1em}\the\count@.~Berichterstatter: & \ignorespaces}%
 		\begin{tabular}{@{}ll}
-			Tag der m\"{u}ndlichen Qualifikation: \qquad & \@date \\
+			Tag des Kolloquiums: \qquad & \@date \\
 			&\\
 			Dekan: & \@dean \\
-			1. Berichterstatter: & \@experts
+	 		& \\
+			Prüfungsausschuss: & \\
+			\hspace{1em}Vorsitz: & \@chair \\
+			\hspace{1em}1. Berichterstatter: & \@experts \\
+			\hspace{1em}Akademischer Beisitzer: & \@assistant
 		\end{tabular}
 		\clearpage
 		\fi\fi
