@@ -1,6 +1,10 @@
-This repository contains a template for my PhD thesis at the University of Tuebingen.
+This repository contains a template for my PhD thesis at Saarland University.
 
-The [[file:thesis.pdf][template]] demonstrates the most important features and looks. You can find a full thesis example [[https://github.com/f-dangel/phd-thesis][here]].
+The [[file:thesis.pdf][template]] demonstrates the most important features and looks. You can find a full thesis example [[https://dx.doi.org/10.22028/D291-45256][here]].
+
+This is a fork from the thesis template by Felix Dangel, which you can find [[https://github.com/f-dangel/phd-thesis-template][here]]. 
+While I have adapted some commands and style choices, the content shown in the example is almost exclusively that from Felix's repository.
+Please go check his template in case you prefer Felix's style better.
 
 * How to use
 
