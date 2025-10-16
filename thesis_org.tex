@@ -1,0 +1,201 @@
+\input{preamble/preamble}
+
+\KOMAoptions{draft=false}% <- disables the draft mode for scrlayer-scrpage
+
+% The title seems to be overwritten afterwards
+\makeindex[columns=3, title=Alphabetical Index, intoc] % Make LaTeX produce the files required to compile the index
+
+\makeglossaries % Make LaTeX produce the files required to compile the glossary
+\makenomenclature % Make LaTeX produce the files required to compile the nomenclature
+
+\input{backmatter/acronyms.tex} % Include the acronyms
+
+%%%%%%%%%%%%%%%%%%%
+%% MY PUBLICATIONS
+%%%%%%%%%%%%%%%%%%%
+
+\DeclareBibliographyCategory{mine}
+\DeclareBibliographyCategory{mine-unused}
+
+\addtocategory{mine}{javaloy2021rotograd}
+\addtocategory{mine}{javaloy2022mitigating}
+\addtocategory{mine}{javaloy2020lipschitz}
+\addtocategory{mine}{javaloy2023causal}
+\addtocategory{mine-unused}{NEURIPS2020_c10f4888}
+\addtocategory{mine-unused}{javaloy2023learnable}
+\addtocategory{mine-unused}{javaloy2020preliminary}
+\addtocategory{mine-unused}{javaloy2020text}
+
+
+%%%%%%%%%%%%%%%%%%%
+%% SPACING AND FORMATTING
+%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\tabletitle}[1]{\textbf{#1}}
+
+% I don't like that there is so much spacing between paragraphs
+\setlength{\parskip}{6pt plus 3pt minus 3pt} % Does not work well in scrbook
+\let\tempone\itemize
+\let\temptwo\enditemize
+\renewenvironment{itemize}{\tempone\addtolength{\itemsep}{0.5\baselineskip}}{\temptwo}
+
+\let\tempthree\enumerate
+\let\tempfour\endenumerate
+\renewenvironment{enumerate}{\tempthree\addtolength{\itemsep}{0.5\baselineskip}}{\tempfour}
+
+% Change colour of bold text
+\let\oldtextbf\textbf
+\renewcommand{\textbf}[1]{\textcolor{maincolor}{\oldtextbf{#1}}}
+\addtokomafont{paragraph}{\color{maincolor}}
+% This hook changes the color of the glossary terms in the paragraphs' titles
+\AddtoDoHook{heading/begingroup/paragraph}{%
+    \renewcommand*{\glstextformat}[1]{\textcolor{maincolor}{#1}}%
+}
+
+
+\newcommand{\openboxthickness}{1pt} % default
+\newcommand{\myopenbox}{\leavevmode
+    \hbox to.77778em{%
+        \color{secondcolor}
+        \hfil\vrule width \openboxthickness
+        \vbox to.675em{%
+            \hrule width \dimexpr.675em-2\dimexpr\openboxthickness height \openboxthickness
+            \vfil
+            \hrule height\openboxthickness
+        }%
+        \vrule width \openboxthickness
+        \hfil
+    }%
+}
+\renewcommand{\qedsymbol}{\myopenbox} % Change the color of the QED symbol
+
+\begin{document}
+
+% ===================================================================
+% FRONTMATTER
+% ===================================================================
+
+\frontmatter % start pre-document content, use roman numerals
+\input{frontmatter/coverpage}
+
+% Show page number in footer aligned to the outside of the page (excluding chapter pages)
+\pagestyle{pagenum.scrheadings}
+
+\input{frontmatter/disclaimer}
+
+\input{frontmatter/acknowledgments}
+
+\input{frontmatter/abstract}
+
+\input{frontmatter/zusammenfassung}
+
+\input{frontmatter/list_of_publicationts}
+
+\input{frontmatter/toc_lof_lot}
+
+\input{frontmatter/notation}
+
+\printglossary[
+	type=\acronymtype,
+    title=Acronyms, 
+    toctitle=Acronyms
+] 
+
+% ===================================================================
+% MAINMATTER
+% ===================================================================
+
+\mainmatter% start main document, reset page numbering, use arabic numbers
+
+% ---------------------------------
+% STRUCTURAL OVERVIEW
+% ---------------------------------
+
+
+\setchapterpreamble[u]{\margintoc}
+\pagelayout{margin} % restore margins
+\chapter{Overview}\label{chap:overview}
+\vspace{-\baselineskip}
+\setlength{\epigraphwidth}{.4\linewidth}
+\epigraph{
+	Vencer\'eis, pero no convencer\'eis.
+}{\textit{Miguel de Unamuno, 1936}}
+\input{chapters/overview}
+
+% ---------------------------------
+% BACKGROUND
+% ---------------------------------
+
+\pagelayout{wide} % disable margins
+\part{Background \& Motivation}\label{part:background}
+\pagelayout{margin} % restore margins
+
+\setchapterpreamble[u]{\margintoc}
+\chapter{Background 1}\label{chap:background-1}
+\input{chapters/background1}
+
+\setchapterpreamble[u]{\margintoc}
+\chapter{Background 2 (advanced)}\label{chap:background-2}
+\input{chapters/background2}
+
+% ---------------------------------
+% MAIN WORK
+% ---------------------------------
+
+\pagelayout{wide} % disable margins
+\part{Backpropagation Beyond the Gradient}\label{part:papers}
+\pagelayout{margin} % restore margins
+
+\setchapterpreamble[u]{\margintoc}
+\chapter{Paper 1}\label{chap:paper-1}
+\input{chapters/paper1}
+
+\setchapterpreamble[u]{\margintoc}
+\chapter{Paper 2}\label{chap:paper-2}
+\input{chapters/paper2}
+
+
+% ---------------------------------
+% CONCLUSION
+% ---------------------------------
+
+\pagelayout{wide} % disable margins
+\part{Conclusion \& Future Directions}\label{part:conclusion}
+\pagelayout{margin} % restore margins
+
+\setchapterpreamble[u]{\margintoc}
+\chapter{Conclusion \& Future Directions}\label{chap:conclusion}
+\input{chapters/conclusion}
+
+% ---------------------------------
+% APPENDIX
+% ---------------------------------
+
+\appendix % number chapters with letters from here on
+
+\pagelayout{wide} % No margins
+\part{Appendix}\label{part:appendix}
+\pagelayout{margin} % Restore margins
+
+\setchapterpreamble[u]{\margintoc}
+\chapter{Additional Material for Chapter \ref{chap:paper-1}}
+\input{chapters/paper1_app}
+
+\setchapterpreamble[u]{\margintoc}
+\chapter{Additional Material for Chapter \ref{chap:paper-2}}
+\input{chapters/paper2_app}
+
+% ===================================================================
+% BACKMATTER
+% ===================================================================
+
+\backmatter% end of the main document content
+
+\input{backmatter/bibliography}
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
